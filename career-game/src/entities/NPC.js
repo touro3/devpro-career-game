@@ -124,53 +124,58 @@ export class NPC {
 
     // Shadow
     g.fillStyle(0x000000, 0.25);
-    g.fillEllipse(8, 23, 11, 4);
+    g.fillEllipse(8, 23, 9, 3);
 
-    // Shoes
-    g.fillStyle(0xfda4af);
-    g.fillRect(2, 20, 5, 3);
-    g.fillRect(9, 20, 5, 3);
+    // Shoes (dark, sporty)
+    g.fillStyle(0x1a1a1a);
+    g.fillRect(5, 21, 3, 2);
+    g.fillRect(9, 21, 3, 2);
 
-    // Skirt
-    g.fillStyle(0x86efac);
-    g.fillRect(2, 15, 12, 6);
+    // Pants (tight athletic)
+    g.fillStyle(0x0f3460);
+    g.fillRect(5, 14, 3, 8);
+    g.fillRect(9, 14, 3, 8);
 
-    // Top
-    g.fillStyle(0x34d399);
-    g.fillRect(4, 9, 8, 7);
+    // Belt line
+    g.fillStyle(0x1a1a4e);
+    g.fillRect(5, 13, 7, 1);
 
-    // Arms (light skin)
+    // Athletic top (fitted)
+    g.fillStyle(0x22c55e);
+    g.fillRect(5, 8, 7, 6);
+
+    // Arms (light skin, slim)
     g.fillStyle(0xfde8c8);
-    g.fillRect(1, 10, 3, 5);
-    g.fillRect(12, 10, 3, 5);
+    g.fillRect(3, 9, 2, 5);
+    g.fillRect(12, 9, 2, 5);
 
     // Neck
     g.fillStyle(0xfde8c8);
-    g.fillRect(7, 7, 2, 3);
+    g.fillRect(7, 6, 3, 3);
 
-    // Head
+    // Head (light skin)
     g.fillStyle(0xfde8c8);
-    g.fillRect(5, 1, 6, 7);
+    g.fillRect(5, 1, 7, 6);
 
-    // White hair
-    g.fillStyle(0xf0f0f0);
-    g.fillRect(4, 0, 8, 3);
-    g.fillRect(3, 2, 2, 7);
-    g.fillRect(11, 2, 2, 7);
+    // Black hair (sleek)
+    g.fillStyle(0x111111);
+    g.fillRect(4, 0, 9, 3);
+    g.fillRect(3, 2, 2, 4);
+    g.fillRect(12, 2, 2, 4);
 
     // Green eyes
     g.fillStyle(0x22c55e);
-    g.fillRect(6, 4, 2, 2);
-    g.fillRect(9, 4, 2, 2);
+    g.fillRect(6, 3, 2, 2);
+    g.fillRect(9, 3, 2, 2);
 
     // Pupils
     g.fillStyle(0x000000);
-    g.fillRect(7, 5, 1, 1);
-    g.fillRect(10, 5, 1, 1);
+    g.fillRect(7, 4, 1, 1);
+    g.fillRect(10, 4, 1, 1);
 
     // Mouth
     g.fillStyle(0xfb7185);
-    g.fillRect(7, 7, 2, 1);
+    g.fillRect(7, 6, 2, 1);
 
     g.generateTexture(key, 16, 24);
     g.destroy();

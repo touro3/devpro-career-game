@@ -71,7 +71,8 @@ export class UIManager {
 
   // ── Progress panel ─────────────────────────────────────────
 
-  showProgress(checkpoints, unlockedIds) {
+  showProgress(checkpoints, unlockedIds, onClose) {
+    this._onProgressClose = onClose ?? null;
     const unlockedSet = new Set(unlockedIds);
     this._progressList.innerHTML = checkpoints
       .map(cp => {

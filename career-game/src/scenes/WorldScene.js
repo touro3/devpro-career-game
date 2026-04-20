@@ -306,7 +306,7 @@ export class WorldScene extends Phaser.Scene {
         this._ui.hideProgress();
         this._paused = false;
       } else {
-        this._ui.showProgress(CHECKPOINTS, this._checkpointSys.getUnlockedIds());
+        this._ui.showProgress(CHECKPOINTS, this._checkpointSys.getUnlockedIds(), () => { this._paused = false; });
         this._paused = true;
       }
     }
