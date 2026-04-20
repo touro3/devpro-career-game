@@ -290,3 +290,64 @@ body {
   font-size: 11px;
   color: #8b949e;
 }
+
+/* ── NPC dialog ──────────────────────────────────── */
+#dialog-box {
+  position: fixed;
+  bottom: 52px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(580px, 90vw);
+  z-index: 200;
+  animation: slideUp 0.18s ease;
+}
+
+#dialog-card {
+  background: rgba(13, 17, 23, 0.97);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  padding: 18px 22px 14px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(255,255,255,0.04);
+}
+
+#dialog-speaker {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+#dialog-text {
+  font-size: 13px;
+  line-height: 1.65;
+  color: #d1d5db;
+  min-height: 44px;
+}
+
+#dialog-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+#dialog-counter {
+  font-size: 10px;
+  color: #4b5563;
+}
+
+#dialog-hint {
+  font-size: 10px;
+  color: #6b7280;
+}
+
+#dialog-hint kbd {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+  padding: 1px 5px;
+  font-family: inherit;
+  color: #fbbf24;
+}

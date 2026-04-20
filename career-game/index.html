@@ -20,7 +20,7 @@
 
   <!-- Controls hint -->
   <div id="controls-hint">
-    WASD · Move &nbsp;|&nbsp; E · Enter Checkpoint &nbsp;|&nbsp; C · Career Progress &nbsp;|&nbsp; R · Reset
+    WASD · Move &nbsp;|&nbsp; E · Interact &nbsp;|&nbsp; C · Career Progress &nbsp;|&nbsp; R · Reset
   </div>
 
   <!-- Interact prompt -->
@@ -49,6 +49,18 @@
       <button class="close-btn" id="progress-close" aria-label="Close">✕</button>
       <h2 class="panel-heading">Career Progress</h2>
       <div id="progress-list"></div>
+    </div>
+  </div>
+
+  <!-- NPC dialog -->
+  <div id="dialog-box" class="hidden">
+    <div id="dialog-card">
+      <div id="dialog-speaker"></div>
+      <div id="dialog-text"></div>
+      <div id="dialog-nav">
+        <span id="dialog-counter"></span>
+        <span id="dialog-hint"></span>
+      </div>
     </div>
   </div>
 

@@ -12,6 +12,12 @@ export class UIManager {
     this._progressList = document.getElementById('progress-list');
     this._progressClose = document.getElementById('progress-close');
 
+    this._dialogBox = document.getElementById('dialog-box');
+    this._dialogSpeaker = document.getElementById('dialog-speaker');
+    this._dialogText = document.getElementById('dialog-text');
+    this._dialogCounter = document.getElementById('dialog-counter');
+    this._dialogHint = document.getElementById('dialog-hint');
+
     this._xpFill = document.getElementById('xp-fill');
     this._xpValue = document.getElementById('xp-value');
 
@@ -21,12 +27,20 @@ export class UIManager {
 
     this._onModalClose = null;
     this._onProgressClose = null;
+    this._dialogOnClose = null;
+    this._dialogLines = [];
+    this._dialogIndex = 0;
+    this._dialogNameColor = '#ffffff';
+    this._dialogTypingComplete = false;
+    this._typewriterTimer = null;
 
     this._modalClose.addEventListener('click', () => this.hideModal());
     this._progressClose.addEventListener('click', () => this.hideProgress());
     this._modal.addEventListener('click', e => { if (e.target === this._modal) this.hideModal(); });
     this._progressPanel.addEventListener('click', e => { if (e.target === this._progressPanel) this.hideProgress(); });
   }
+
+  // ── Checkpoint modal ───────────────────────────────────────
 
   showModal(checkpoint, isFirstVisit, onClose) {
     this._onModalClose = onClose ?? null;
@@ -54,6 +68,8 @@ export class UIManager {
   isModalOpen() {
     return !this._modal.classList.contains('hidden');
   }
+
+  // ── Progress panel ─────────────────────────────────────────
 
   showProgress(checkpoints, unlockedIds) {
     const unlockedSet = new Set(unlockedIds);
@@ -83,13 +99,83 @@ export class UIManager {
     return !this._progressPanel.classList.contains('hidden');
   }
 
+  // ── NPC dialog ─────────────────────────────────────────────
+
+  showDialog(npcData, onClose) {
+    this._dialogLines = npcData.dialog;
+    this._dialogIndex = 0;
+    this._dialogNameColor = npcData.nameColor;
+    this._dialogOnClose = onClose ?? null;
+    this._dialogBox.classList.remove('hidden');
+    this._renderDialogLine(0);
+  }
+
+  advanceDialog() {
+    if (!this._dialogTypingComplete) {
+      if (this._typewriterTimer) { clearInterval(this._typewriterTimer); this._typewriterTimer = null; }
+      this._dialogText.textContent = this._dialogLines[this._dialogIndex].text;
+      this._dialogTypingComplete = true;
+      return;
+    }
+    this._dialogIndex++;
+    if (this._dialogIndex >= this._dialogLines.length) {
+      this.hideDialog();
+    } else {
+      this._renderDialogLine(this._dialogIndex);
+    }
+  }
+
+  hideDialog() {
+    this._dialogBox.classList.add('hidden');
+    if (this._typewriterTimer) { clearInterval(this._typewriterTimer); this._typewriterTimer = null; }
+    if (this._dialogOnClose) { this._dialogOnClose(); this._dialogOnClose = null; }
+  }
+
+  isDialogOpen() {
+    return !this._dialogBox.classList.contains('hidden');
+  }
+
+  _renderDialogLine(index) {
+    const line = this._dialogLines[index];
+    const isPlayer = line.speaker === 'PLAYER';
+
+    this._dialogSpeaker.textContent = line.speaker;
+    this._dialogSpeaker.style.color = isPlayer ? '#60a5fa' : this._dialogNameColor;
+    this._dialogCounter.textContent = `${index + 1} / ${this._dialogLines.length}`;
+    this._dialogHint.innerHTML = index < this._dialogLines.length - 1
+      ? 'Press <kbd>E</kbd> to continue'
+      : 'Press <kbd>E</kbd> to close';
+
+    this._dialogText.textContent = '';
+    this._dialogTypingComplete = false;
+
+    let i = 0;
+    const text = line.text;
+    this._typewriterTimer = setInterval(() => {
+      this._dialogText.textContent += text[i];
+      i++;
+      if (i >= text.length) {
+        clearInterval(this._typewriterTimer);
+        this._typewriterTimer = null;
+        this._dialogTypingComplete = true;
+      }
+    }, 22);
+  }
+
+  // ── HUD ────────────────────────────────────────────────────
+
   updateXP(xp, percentage, total) {
     this._xpFill.style.width = `${percentage}%`;
     this._xpValue.textContent = `${xp} / ${total}`;
   }
 
-  showInteractPrompt(visible) {
+  showInteractPrompt(visible, isNPC = false) {
     this._interactPrompt.classList.toggle('hidden', !visible);
+    if (visible) {
+      this._interactPrompt.innerHTML = isNPC
+        ? 'Press <kbd>E</kbd> to talk'
+        : 'Press <kbd>E</kbd> to enter';
+    }
   }
 
   showLockedToast() {

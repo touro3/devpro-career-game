@@ -1,7 +1,9 @@
 import Phaser from 'phaser';
 import { CHECKPOINTS, TOTAL_XP } from '../data/checkpoints.js';
+import { NPCS } from '../data/npcs.js';
 import { Player } from '../entities/Player.js';
 import { CheckpointBuilding } from '../entities/CheckpointBuilding.js';
+import { NPC } from '../entities/NPC.js';
 import { XPSystem } from '../systems/XPSystem.js';
 import { CheckpointSystem } from '../systems/CheckpointSystem.js';
 import { PersistenceSystem } from '../systems/PersistenceSystem.js';
@@ -28,12 +30,15 @@ export class WorldScene extends Phaser.Scene {
     this._ui = new UIManager();
 
     this._nearBuilding = null;
+    this._nearNPC = null;
     this._paused = false;
 
     this._generateTextures();
     this._buildMap();
     this._createBuildings();
+    this._createNPCs();
     this._createPlayer();
+    this._createParticles();
     this._setupCamera();
     this._setupInput();
 
@@ -54,10 +59,9 @@ export class WorldScene extends Phaser.Scene {
   // ── Map construction ───────────────────────────────────────
 
   _generateTextures() {
-    if (this.textures.exists('tile-grass')) return;
+    if (this.textures.exists('tile-grass-0')) return;
 
     const grassColors = [0x2d5a27, 0x2d5a27, 0x2d5a27, 0x305e2a, 0x2b5626];
-
     grassColors.forEach((baseColor, i) => {
       const g = this.make.graphics({ add: false });
       g.fillStyle(baseColor);
@@ -89,6 +93,23 @@ export class WorldScene extends Phaser.Scene {
     tg.fillTriangle(16, 4, 6, 22, 26, 22);
     tg.generateTexture('tile-tree', 32, 32);
     tg.destroy();
+
+    const tg2 = this.make.graphics({ add: false });
+    tg2.fillStyle(0x1a3d16);
+    tg2.fillRect(11, 18, 10, 14);
+    tg2.fillStyle(0x1a5e15);
+    tg2.fillTriangle(16, 2, 3, 22, 29, 22);
+    tg2.fillStyle(0x267a1a);
+    tg2.fillTriangle(16, 7, 6, 24, 26, 24);
+    tg2.generateTexture('tile-tree-b', 32, 32);
+    tg2.destroy();
+
+    // Firefly particle texture
+    const fg = this.make.graphics({ add: false });
+    fg.fillStyle(0xfef08a, 1);
+    fg.fillCircle(3, 3, 3);
+    fg.generateTexture('firefly', 6, 6);
+    fg.destroy();
   }
 
   _buildMap() {
@@ -107,11 +128,12 @@ export class WorldScene extends Phaser.Scene {
     }
 
     const pathTiles = this._computePathTiles();
+    const pathSet = new Set(pathTiles.map(({ x, y }) => `${x},${y}`));
     pathTiles.forEach(({ x, y }) => {
       bg.draw('tile-path', x * TILE_SIZE, y * TILE_SIZE);
     });
 
-    this._addDecorations(bg);
+    this._addDecorations(bg, pathSet);
   }
 
   _computePathTiles() {
@@ -129,7 +151,6 @@ export class WorldScene extends Phaser.Scene {
       const from = CHECKPOINTS[i].mapPosition;
       const to = CHECKPOINTS[i + 1].mapPosition;
 
-      // L-shaped path: horizontal segment then vertical
       const dx = to.tileX > from.tileX ? 1 : -1;
       const dy = to.tileY > from.tileY ? 1 : -1;
 
@@ -151,19 +172,30 @@ export class WorldScene extends Phaser.Scene {
     return tiles;
   }
 
-  _addDecorations(rt) {
-    const occupied = new Set(
-      CHECKPOINTS.map(cp => `${cp.mapPosition.tileX},${cp.mapPosition.tileY}`)
-    );
+  _addDecorations(rt, pathSet = new Set()) {
+    const occupied = new Set([
+      ...CHECKPOINTS.map(cp => `${cp.mapPosition.tileX},${cp.mapPosition.tileY}`),
+      ...pathSet,
+    ]);
 
     const treePositions = [
+      // original
       [2, 2], [8, 2], [38, 2], [1, 14], [38, 14],
       [2, 26], [38, 26], [16, 10], [33, 22], [7, 17],
+      // edges
+      [0, 5], [0, 10], [0, 16], [0, 22],
+      [39, 5], [39, 10], [39, 16], [39, 22],
+      [5, 27], [12, 27], [21, 27], [30, 27],
+      // top row
+      [3, 0], [9, 0], [18, 0], [26, 0], [33, 0],
+      // interior
+      [24, 11], [6, 12], [22, 23], [36, 6],
     ];
 
-    treePositions.forEach(([col, row]) => {
+    treePositions.forEach(([col, row], i) => {
       if (!occupied.has(`${col},${row}`)) {
-        rt.draw('tile-tree', col * TILE_SIZE, row * TILE_SIZE);
+        const key = i % 3 === 0 ? 'tile-tree-b' : 'tile-tree';
+        rt.draw(key, col * TILE_SIZE, row * TILE_SIZE);
       }
     });
   }
@@ -178,11 +210,35 @@ export class WorldScene extends Phaser.Scene {
     });
   }
 
+  _createNPCs() {
+    this._npcs = NPCS.map(data => new NPC(this, data));
+  }
+
   _createPlayer() {
     const start = CHECKPOINTS[0].mapPosition;
     const px = start.tileX * TILE_SIZE + TILE_SIZE * 3;
     const py = start.tileY * TILE_SIZE;
     this._player = new Player(this, px, py);
+  }
+
+  _createParticles() {
+    const worldW = MAP_COLS * TILE_SIZE;
+    const worldH = MAP_ROWS * TILE_SIZE;
+
+    this.add.particles(0, 0, 'firefly', {
+      emitZone: {
+        type: 'random',
+        source: new Phaser.Geom.Rectangle(32, 32, worldW - 64, worldH - 64),
+      },
+      lifespan: { min: 3000, max: 7000 },
+      speedX: { min: -25, max: 25 },
+      speedY: { min: -25, max: 25 },
+      scale: { start: 1.5, end: 0 },
+      alpha: { start: 0.65, end: 0 },
+      blendMode: 'ADD',
+      frequency: 280,
+      quantity: 1,
+    }).setDepth(1);
   }
 
   // ── Camera & input ─────────────────────────────────────────
@@ -207,6 +263,7 @@ export class WorldScene extends Phaser.Scene {
 
   _checkProximity() {
     this._nearBuilding = null;
+    this._nearNPC = null;
 
     for (const building of this._buildings) {
       if (building.isNear(this._player.x, this._player.y)) {
@@ -215,17 +272,33 @@ export class WorldScene extends Phaser.Scene {
       }
     }
 
-    this._ui.showInteractPrompt(this._nearBuilding !== null);
+    if (!this._nearBuilding) {
+      for (const npc of this._npcs) {
+        if (npc.isNear(this._player.x, this._player.y)) {
+          this._nearNPC = npc;
+          break;
+        }
+      }
+    }
+
+    const near = this._nearBuilding !== null || this._nearNPC !== null;
+    this._ui.showInteractPrompt(near, this._nearNPC !== null);
+    this._npcs.forEach(npc => npc.showIndicator(npc === this._nearNPC));
   }
 
   _handleKeys() {
     if (Phaser.Input.Keyboard.JustDown(this._eKey)) {
+      if (this._ui.isDialogOpen()) {
+        this._ui.advanceDialog();
+        return;
+      }
       if (this._ui.isModalOpen()) {
         this._ui.hideModal();
         this._paused = false;
         return;
       }
       if (this._nearBuilding) this._enterBuilding(this._nearBuilding);
+      else if (this._nearNPC) this._talkToNPC(this._nearNPC);
     }
 
     if (Phaser.Input.Keyboard.JustDown(this._cKey)) {
@@ -241,6 +314,11 @@ export class WorldScene extends Phaser.Scene {
     if (Phaser.Input.Keyboard.JustDown(this._rKey)) {
       this._resetGame();
     }
+  }
+
+  _talkToNPC(npc) {
+    this._paused = true;
+    this._ui.showDialog(npc.data, () => { this._paused = false; });
   }
 
   _enterBuilding(building) {
