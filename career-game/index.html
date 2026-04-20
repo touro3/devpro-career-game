@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DevPro — Career Path</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="game-container"></div>
+
+  <!-- XP HUD -->
+  <div id="hud">
+    <div id="xp-bar-wrap">
+      <span id="hud-label">XP</span>
+      <div id="xp-track"><div id="xp-fill"></div></div>
+      <span id="xp-value">0 / 2050</span>
+    </div>
+  </div>
+
+  <!-- Controls hint -->
+  <div id="controls-hint">
+    WASD · Move &nbsp;|&nbsp; E · Enter Checkpoint &nbsp;|&nbsp; C · Career Progress &nbsp;|&nbsp; R · Reset
+  </div>
+
+  <!-- Interact prompt -->
+  <div id="interact-prompt" class="hidden">Press <kbd>E</kbd> to enter</div>
+
+  <!-- Locked toast -->
+  <div id="locked-toast" class="hidden">🔒 Complete previous checkpoints first</div>
+
+  <!-- Checkpoint modal -->
+  <div id="checkpoint-modal" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-card">
+      <button class="close-btn" id="modal-close" aria-label="Close">✕</button>
+      <div class="modal-phase" id="modal-phase"></div>
+      <h2 class="modal-title" id="modal-title"></h2>
+      <p class="modal-desc" id="modal-desc"></p>
+      <div class="modal-skills" id="modal-skills"></div>
+      <div class="modal-footer">
+        <span class="xp-badge" id="modal-xp"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Career progress panel -->
+  <div id="progress-panel" class="overlay hidden" role="dialog" aria-modal="true" aria-label="Career Progress">
+    <div class="panel-card">
+      <button class="close-btn" id="progress-close" aria-label="Close">✕</button>
+      <h2 class="panel-heading">Career Progress</h2>
+      <div id="progress-list"></div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
