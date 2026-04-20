@@ -49,10 +49,10 @@ export class WorldScene extends Phaser.Scene {
   }
 
   update() {
-    if (this._paused) return;
-
-    this._player.update(this._cursors, this._wasd);
-    this._checkProximity();
+    if (!this._paused) {
+      this._player.update(this._cursors, this._wasd);
+      this._checkProximity();
+    }
     this._handleKeys();
   }
 
