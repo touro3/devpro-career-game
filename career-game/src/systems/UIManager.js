@@ -18,6 +18,9 @@ export class UIManager {
     this._dialogCounter = document.getElementById('dialog-counter');
     this._dialogHint = document.getElementById('dialog-hint');
 
+    this._endingScreen = document.getElementById('ending-screen');
+    this._endingClose = document.getElementById('ending-close');
+
     this._xpFill = document.getElementById('xp-fill');
     this._xpValue = document.getElementById('xp-value');
 
@@ -28,6 +31,7 @@ export class UIManager {
     this._onModalClose = null;
     this._onProgressClose = null;
     this._dialogOnClose = null;
+    this._endingOnClose = null;
     this._dialogLines = [];
     this._dialogIndex = 0;
     this._dialogNameColor = '#ffffff';
@@ -36,8 +40,10 @@ export class UIManager {
 
     this._modalClose.addEventListener('click', () => this.hideModal());
     this._progressClose.addEventListener('click', () => this.hideProgress());
+    this._endingClose.addEventListener('click', () => this.hideEnding());
     this._modal.addEventListener('click', e => { if (e.target === this._modal) this.hideModal(); });
     this._progressPanel.addEventListener('click', e => { if (e.target === this._progressPanel) this.hideProgress(); });
+    this._endingScreen.addEventListener('click', e => { if (e.target === this._endingScreen) this.hideEnding(); });
   }
 
   // ── Checkpoint modal ───────────────────────────────────────
@@ -183,6 +189,22 @@ export class UIManager {
     clearTimeout(this._toastTimer);
     this._lockedToast.classList.remove('hidden');
     this._toastTimer = setTimeout(() => this._lockedToast.classList.add('hidden'), 2000);
+  }
+
+  // ── Ending screen ──────────────────────────────────────────
+
+  showEnding(onClose) {
+    this._endingOnClose = onClose ?? null;
+    this._endingScreen.classList.remove('hidden');
+  }
+
+  hideEnding() {
+    this._endingScreen.classList.add('hidden');
+    if (this._endingOnClose) { this._endingOnClose(); this._endingOnClose = null; }
+  }
+
+  isEndingOpen() {
+    return !this._endingScreen.classList.contains('hidden');
   }
 
   _hexColor(phaserHex) {

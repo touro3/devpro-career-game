@@ -292,6 +292,11 @@ export class WorldScene extends Phaser.Scene {
         this._ui.advanceDialog();
         return;
       }
+      if (this._ui.isEndingOpen()) {
+        this._ui.hideEnding();
+        this._paused = false;
+        return;
+      }
       if (this._ui.isModalOpen()) {
         this._ui.hideModal();
         this._paused = false;
@@ -327,7 +332,10 @@ export class WorldScene extends Phaser.Scene {
 
     if (alreadyUnlocked) {
       this._paused = true;
-      this._ui.showModal(cp, false, () => { this._paused = false; });
+      const onClose = cp.id === 'target'
+        ? () => { this._paused = false; this._ui.showEnding(() => { this._paused = false; }); }
+        : () => { this._paused = false; };
+      this._ui.showModal(cp, false, onClose);
       return;
     }
 
@@ -345,7 +353,11 @@ export class WorldScene extends Phaser.Scene {
       this._refreshBuildingStates();
 
       this._paused = true;
-      this._ui.showModal(cp, true, () => { this._paused = false; });
+      // If this is the final checkpoint, show ending screen after modal
+      const onClose = cp.id === 'target'
+        ? () => { this._ui.showEnding(() => { this._paused = false; }); }
+        : () => { this._paused = false; };
+      this._ui.showModal(cp, true, onClose);
       return;
     }
 
