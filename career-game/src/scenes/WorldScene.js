@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { CHECKPOINTS, TOTAL_XP } from '../data/checkpoints.js';
 import { NPCS } from '../data/npcs.js';
+import { MENTORING_SESSIONS } from '../data/mentoringData.js';
 import { Player } from '../entities/Player.js';
 import { CheckpointBuilding } from '../entities/CheckpointBuilding.js';
 import { NPC } from '../entities/NPC.js';
@@ -8,6 +9,7 @@ import { XPSystem } from '../systems/XPSystem.js';
 import { CheckpointSystem } from '../systems/CheckpointSystem.js';
 import { PersistenceSystem } from '../systems/PersistenceSystem.js';
 import { UIManager } from '../systems/UIManager.js';
+import { CareerMentoringSystem } from '../systems/CareerMentoringSystem.js';
 
 const TILE_SIZE = 32;
 const MAP_COLS = 40;
@@ -26,6 +28,7 @@ export class WorldScene extends Phaser.Scene {
     this._xp.setTotalPossibleXP(TOTAL_XP);
 
     this._checkpointSys = new CheckpointSystem(CHECKPOINTS, saved?.unlocked ?? []);
+    this._mentoringSystem = new CareerMentoringSystem();
 
     this._ui = new UIManager();
 
@@ -43,6 +46,8 @@ export class WorldScene extends Phaser.Scene {
     this._setupInput();
 
     this._ui.updateXP(this._xp.xp, this._xp.percentage, TOTAL_XP);
+    this._ui.updateMarketReady(this._mentoringSystem.isBuffActive, this._mentoringSystem.buffActionsRemaining);
+    this._ui.updateMentoringStats(this._mentoringSystem.marketAuthority, this._mentoringSystem.networking);
     this._refreshBuildingStates();
 
     this.cameras.main.fadeIn(400, 0, 0, 0);
@@ -256,6 +261,7 @@ export class WorldScene extends Phaser.Scene {
     this._wasd = this.input.keyboard.addKeys({ W: 'W', A: 'A', S: 'S', D: 'D' });
     this._eKey = this.input.keyboard.addKey('E');
     this._cKey = this.input.keyboard.addKey('C');
+    this._mKey = this.input.keyboard.addKey('M');
     this._rKey = this.input.keyboard.addKey('R');
   }
 
@@ -288,6 +294,11 @@ export class WorldScene extends Phaser.Scene {
 
   _handleKeys() {
     if (Phaser.Input.Keyboard.JustDown(this._eKey)) {
+      if (this._ui.isGalleryOpen()) {
+        this._ui.hideGallery();
+        this._paused = false;
+        return;
+      }
       if (this._ui.isDialogOpen()) {
         this._ui.advanceDialog();
         return;
@@ -310,8 +321,19 @@ export class WorldScene extends Phaser.Scene {
       if (this._ui.isProgressOpen()) {
         this._ui.hideProgress();
         this._paused = false;
-      } else {
+      } else if (!this._paused) {
         this._ui.showProgress(CHECKPOINTS, this._checkpointSys.getUnlockedIds(), () => { this._paused = false; });
+        this._paused = true;
+      }
+    }
+
+    if (Phaser.Input.Keyboard.JustDown(this._mKey)) {
+      if (this._ui.isMilestonesOpen()) {
+        this._ui.hideMilestones();
+        this._paused = false;
+      } else if (!this._paused) {
+        const completedIds = this._mentoringSystem.getCompletedSessions();
+        this._ui.showMilestones(MENTORING_SESSIONS, completedIds, () => { this._paused = false; });
         this._paused = true;
       }
     }
@@ -323,7 +345,31 @@ export class WorldScene extends Phaser.Scene {
 
   _talkToNPC(npc) {
     this._paused = true;
-    this._ui.showDialog(npc.data, () => { this._paused = false; });
+    const npcData = npc.data;
+
+    const onDialogClose = () => {
+      if (npcData.sessionId) {
+        const session = MENTORING_SESSIONS.find(s => s.id === npcData.sessionId);
+        if (session) {
+          const isNew = this._mentoringSystem.registerSession(session);
+          this._ui.updateMarketReady(
+            this._mentoringSystem.isBuffActive,
+            this._mentoringSystem.buffActionsRemaining,
+          );
+          this._ui.updateMentoringStats(
+            this._mentoringSystem.marketAuthority,
+            this._mentoringSystem.networking,
+          );
+          if (isNew) {
+            this._ui.showGallery(session, () => { this._paused = false; });
+            return;
+          }
+        }
+      }
+      this._paused = false;
+    };
+
+    this._ui.showDialog(npcData, onDialogClose);
   }
 
   _enterBuilding(building) {
@@ -374,6 +420,7 @@ export class WorldScene extends Phaser.Scene {
 
   _resetGame() {
     this._persistence.clear();
+    this._mentoringSystem.clear();
     this.cameras.main.fadeOut(300, 0, 0, 0);
     this.cameras.main.once('camerafadeoutcomplete', () => {
       this.scene.restart();

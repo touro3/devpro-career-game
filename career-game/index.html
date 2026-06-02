@@ -16,11 +16,20 @@
       <div id="xp-track"><div id="xp-fill"></div></div>
       <span id="xp-value">0 / 2050</span>
     </div>
+    <div id="market-ready-badge" class="hidden">
+      <span id="market-ready-icon">★</span>
+      <span id="market-ready-label">MARKET READY</span>
+      <span id="market-ready-actions"></span>
+    </div>
+    <div id="mentoring-stats" class="hidden">
+      <span id="stat-authority" title="Market Authority">⬡ <span id="authority-val">0</span></span>
+      <span id="stat-networking" title="Networking">◈ <span id="networking-val">0</span></span>
+    </div>
   </div>
 
   <!-- Controls hint -->
   <div id="controls-hint">
-    WASD · Move &nbsp;|&nbsp; E · Interact &nbsp;|&nbsp; C · Career Progress &nbsp;|&nbsp; R · Reset
+    WASD · Move &nbsp;|&nbsp; E · Interact &nbsp;|&nbsp; C · Career Progress &nbsp;|&nbsp; M · Mentoria &nbsp;|&nbsp; R · Reset
   </div>
 
   <!-- Interact prompt -->
@@ -61,6 +70,43 @@
         <span id="dialog-counter"></span>
         <span id="dialog-hint"></span>
       </div>
+    </div>
+  </div>
+
+  <!-- Mentoring photo gallery (shown after Linik dialog) -->
+  <div id="mentoring-gallery" class="overlay hidden" role="dialog" aria-modal="true" aria-label="Mentoria IDP">
+    <div class="gallery-card">
+      <button class="close-btn" id="gallery-close" aria-label="Fechar">✕</button>
+      <div class="gallery-header">
+        <div class="gallery-badge">MENTORIA IDP</div>
+        <div class="gallery-session-label" id="gallery-session-label"></div>
+        <h2 class="gallery-title" id="gallery-title"></h2>
+        <div class="gallery-date" id="gallery-date"></div>
+      </div>
+      <div class="gallery-photos" id="gallery-photos"></div>
+      <div class="gallery-body">
+        <p class="gallery-summary" id="gallery-summary"></p>
+        <ul class="gallery-notes" id="gallery-notes"></ul>
+      </div>
+      <div class="gallery-footer">
+        <div class="gallery-points">
+          <span class="points-badge authority">⬡ <span id="gallery-authority"></span> Market Authority</span>
+          <span class="points-badge networking">◈ <span id="gallery-networking"></span> Networking</span>
+        </div>
+        <div class="gallery-hint">Press <kbd>E</kbd> to continue</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Career Milestones panel (M key) -->
+  <div id="milestones-panel" class="overlay hidden" role="dialog" aria-modal="true" aria-label="Conquistas de Carreira">
+    <div class="milestones-card">
+      <button class="close-btn" id="milestones-close" aria-label="Fechar">✕</button>
+      <div class="milestones-header">
+        <h2 class="milestones-title">Conquistas de Carreira</h2>
+        <p class="milestones-subtitle">Mentoria IDP · Prof. Linik Moraes</p>
+      </div>
+      <div id="milestones-feed"></div>
     </div>
   </div>
 

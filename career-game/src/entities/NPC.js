@@ -58,7 +58,8 @@ export class NPC {
   _generateTexture() {
     const key = `npc-${this._data.id}`;
     if (this._scene.textures.exists(key)) return;
-    if (this._data.gender === 'male') this._drawMale(key);
+    if (this._data.id.startsWith('linik')) this._drawLinik(key);
+    else if (this._data.gender === 'male') this._drawMale(key);
     else this._drawFemale(key);
   }
 
@@ -176,6 +177,87 @@ export class NPC {
     // Mouth
     g.fillStyle(0xfb7185);
     g.fillRect(7, 6, 2, 1);
+
+    g.generateTexture(key, 16, 24);
+    g.destroy();
+  }
+
+  _drawLinik(key) {
+    const g = this._scene.make.graphics({ add: false });
+
+    // Shadow
+    g.fillStyle(0x000000, 0.25);
+    g.fillEllipse(8, 23, 10, 3);
+
+    // Shoes (black heels)
+    g.fillStyle(0x1a0a0a);
+    g.fillRect(5, 21, 3, 2);
+    g.fillRect(9, 21, 3, 2);
+
+    // Pants (dark/black — elegant)
+    g.fillStyle(0x111827);
+    g.fillRect(5, 14, 3, 8);
+    g.fillRect(9, 14, 3, 8);
+
+    // Belt line
+    g.fillStyle(0x0d0d1a);
+    g.fillRect(5, 13, 7, 1);
+
+    // Red blazer body (main)
+    g.fillStyle(0xbe123c);
+    g.fillRect(4, 8, 9, 6);
+
+    // Blazer lapels (darker red — gives jacket shape)
+    g.fillStyle(0x9f1239);
+    g.fillRect(6, 8, 2, 5);
+    g.fillRect(9, 8, 2, 5);
+
+    // Inner shirt (dark under blazer)
+    g.fillStyle(0x1a1a1a);
+    g.fillRect(7, 9, 3, 4);
+
+    // Arms (skin — warm olive tone)
+    g.fillStyle(0xf0c098);
+    g.fillRect(2, 9, 2, 5);
+    g.fillRect(13, 9, 2, 5);
+
+    // Neck
+    g.fillStyle(0xf0c098);
+    g.fillRect(7, 6, 3, 3);
+
+    // Head (face)
+    g.fillStyle(0xf0c098);
+    g.fillRect(5, 1, 7, 6);
+
+    // Long flowing black hair — top crown
+    g.fillStyle(0x111111);
+    g.fillRect(4, 0, 9, 3);
+
+    // Long hair — sides of head (wide)
+    g.fillRect(3, 1, 2, 7);
+    g.fillRect(12, 1, 2, 7);
+
+    // Long hair — flowing down past shoulders (signature look)
+    g.fillRect(3, 8, 1, 6);
+    g.fillRect(13, 8, 1, 6);
+
+    // Dark brown eyes (warm, expressive)
+    g.fillStyle(0x3d1f0f);
+    g.fillRect(6, 3, 2, 2);
+    g.fillRect(9, 3, 2, 2);
+
+    // Eye pupils
+    g.fillStyle(0x0a0a0a);
+    g.fillRect(7, 4, 1, 1);
+    g.fillRect(10, 4, 1, 1);
+
+    // Red lips (signature red lipstick)
+    g.fillStyle(0xe11d48);
+    g.fillRect(7, 6, 3, 1);
+
+    // Necklace (gold heart detail — she always wears one)
+    g.fillStyle(0xd4af37);
+    g.fillRect(8, 8, 1, 1);
 
     g.generateTexture(key, 16, 24);
     g.destroy();

@@ -28,8 +28,31 @@ export class UIManager {
     this._lockedToast = document.getElementById('locked-toast');
     this._toastTimer = null;
 
+    this._marketReadyBadge = document.getElementById('market-ready-badge');
+    this._marketReadyActions = document.getElementById('market-ready-actions');
+    this._mentoringStats = document.getElementById('mentoring-stats');
+    this._authorityVal = document.getElementById('authority-val');
+    this._networkingVal = document.getElementById('networking-val');
+
+    this._galleryPanel = document.getElementById('mentoring-gallery');
+    this._galleryClose = document.getElementById('gallery-close');
+    this._gallerySessionLabel = document.getElementById('gallery-session-label');
+    this._galleryTitle = document.getElementById('gallery-title');
+    this._galleryDate = document.getElementById('gallery-date');
+    this._galleryPhotos = document.getElementById('gallery-photos');
+    this._gallerySummary = document.getElementById('gallery-summary');
+    this._galleryNotes = document.getElementById('gallery-notes');
+    this._galleryAuthority = document.getElementById('gallery-authority');
+    this._galleryNetworking = document.getElementById('gallery-networking');
+
+    this._milestonesPanel = document.getElementById('milestones-panel');
+    this._milestonesClose = document.getElementById('milestones-close');
+    this._milestonesFeed = document.getElementById('milestones-feed');
+
     this._onModalClose = null;
     this._onProgressClose = null;
+    this._onGalleryClose = null;
+    this._onMilestonesClose = null;
     this._dialogOnClose = null;
     this._endingOnClose = null;
     this._dialogLines = [];
@@ -41,9 +64,13 @@ export class UIManager {
     this._modalClose.addEventListener('click', () => this.hideModal());
     this._progressClose.addEventListener('click', () => this.hideProgress());
     this._endingClose.addEventListener('click', () => this.hideEnding());
+    this._galleryClose.addEventListener('click', () => this.hideGallery());
+    this._milestonesClose.addEventListener('click', () => this.hideMilestones());
     this._modal.addEventListener('click', e => { if (e.target === this._modal) this.hideModal(); });
     this._progressPanel.addEventListener('click', e => { if (e.target === this._progressPanel) this.hideProgress(); });
     this._endingScreen.addEventListener('click', e => { if (e.target === this._endingScreen) this.hideEnding(); });
+    this._galleryPanel.addEventListener('click', e => { if (e.target === this._galleryPanel) this.hideGallery(); });
+    this._milestonesPanel.addEventListener('click', e => { if (e.target === this._milestonesPanel) this.hideMilestones(); });
   }
 
   // ── Checkpoint modal ───────────────────────────────────────
@@ -167,6 +194,102 @@ export class UIManager {
         this._dialogTypingComplete = true;
       }
     }, 22);
+  }
+
+  // ── Mentoring gallery ──────────────────────────────────────
+
+  showGallery(session, onClose) {
+    this._onGalleryClose = onClose ?? null;
+    this._gallerySessionLabel.textContent = `Sessão · ${session.sessionName}`;
+    this._galleryTitle.textContent = session.title;
+    this._galleryDate.textContent = session.date;
+    this._gallerySummary.textContent = session.summary;
+    this._galleryAuthority.textContent = `+${session.marketAuthorityPoints}`;
+    this._galleryNetworking.textContent = `+${session.networkingPoints}`;
+
+    this._galleryPhotos.innerHTML = session.photos.map(url =>
+      `<img src="${url}" alt="Mentoria IDP" loading="lazy" onerror="this.outerHTML='<div class=\\'photo-placeholder\\'>📷 foto</div>'">`
+    ).join('');
+
+    this._galleryNotes.innerHTML = session.strategicNotes
+      .map(note => `<li>${note}</li>`)
+      .join('');
+
+    this._galleryPanel.classList.remove('hidden');
+  }
+
+  hideGallery() {
+    this._galleryPanel.classList.add('hidden');
+    if (this._onGalleryClose) { this._onGalleryClose(); this._onGalleryClose = null; }
+  }
+
+  isGalleryOpen() {
+    return !this._galleryPanel.classList.contains('hidden');
+  }
+
+  // ── Career milestones ──────────────────────────────────────
+
+  showMilestones(sessions, completedIds, onClose) {
+    this._onMilestonesClose = onClose ?? null;
+    const completedSet = new Set(completedIds);
+
+    this._milestonesFeed.innerHTML = sessions.map(session => {
+      const unlocked = completedSet.has(session.id);
+      const dotClass = unlocked ? 'milestone-session-dot' : 'milestone-session-dot locked-dot';
+      const itemClass = unlocked ? 'milestone-item unlocked' : 'milestone-item locked';
+      const labelClass = unlocked ? 'milestone-session-name' : 'milestone-session-name locked-label';
+
+      const photosHtml = unlocked
+        ? session.photos.map(url =>
+            `<img src="${url}" alt="Mentoria" loading="lazy" onerror="this.outerHTML='<div class=\\'photo-placeholder\\'>📷</div>'">`
+          ).join('')
+        : '<div class="photo-placeholder">🔒</div><div class="photo-placeholder">🔒</div>';
+
+      const bodyHtml = unlocked
+        ? `<div class="milestone-photos-row">${photosHtml}</div>
+           <p class="milestone-summary-text">${session.summary}</p>`
+        : `<p class="milestone-locked-msg">Complete a sessão anterior para desbloquear.</p>`;
+
+      return `
+        <div class="${itemClass}">
+          <div class="milestone-item-header">
+            <div class="${dotClass}"></div>
+            <div class="milestone-meta">
+              <div class="${labelClass}">${session.sessionName}</div>
+              <div class="milestone-title-text">${session.title}</div>
+            </div>
+            <div class="milestone-date">${session.date}</div>
+          </div>
+          ${bodyHtml}
+        </div>`;
+    }).join('');
+
+    this._milestonesPanel.classList.remove('hidden');
+  }
+
+  hideMilestones() {
+    this._milestonesPanel.classList.add('hidden');
+    if (this._onMilestonesClose) { this._onMilestonesClose(); this._onMilestonesClose = null; }
+  }
+
+  isMilestonesOpen() {
+    return !this._milestonesPanel.classList.contains('hidden');
+  }
+
+  // ── Market Ready buff HUD ──────────────────────────────────
+
+  updateMarketReady(isActive, actionsRemaining) {
+    this._marketReadyBadge.classList.toggle('hidden', !isActive);
+    if (isActive) {
+      this._marketReadyActions.textContent = `×${actionsRemaining}`;
+    }
+  }
+
+  updateMentoringStats(authority, networking) {
+    const hasStats = authority > 0 || networking > 0;
+    this._mentoringStats.classList.toggle('hidden', !hasStats);
+    this._authorityVal.textContent = authority;
+    this._networkingVal.textContent = networking;
   }
 
   // ── HUD ────────────────────────────────────────────────────

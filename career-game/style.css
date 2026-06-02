@@ -70,6 +70,60 @@ body {
   min-width: 72px;
 }
 
+/* ── Market Ready badge ──────────────────────────── */
+#market-ready-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  padding: 5px 12px;
+  background: rgba(52, 211, 153, 0.12);
+  border: 1px solid rgba(52, 211, 153, 0.35);
+  border-radius: 4px;
+  animation: pulse-badge 2s ease-in-out infinite;
+}
+
+@keyframes pulse-badge {
+  0%, 100% { border-color: rgba(52, 211, 153, 0.35); box-shadow: none; }
+  50% { border-color: rgba(52, 211, 153, 0.7); box-shadow: 0 0 8px rgba(52, 211, 153, 0.3); }
+}
+
+#market-ready-icon {
+  color: #34d399;
+  font-size: 11px;
+}
+
+#market-ready-label {
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: #34d399;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+#market-ready-actions {
+  font-size: 9px;
+  color: rgba(52, 211, 153, 0.6);
+}
+
+/* ── Mentoring stats in HUD ──────────────────────── */
+#mentoring-stats {
+  display: flex;
+  gap: 12px;
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+#stat-authority, #stat-networking {
+  font-size: 9px;
+  color: #8b949e;
+  letter-spacing: 0.5px;
+}
+
+#stat-authority { color: #a78bfa; }
+#stat-networking { color: #60a5fa; }
+
 /* ── Controls hint ───────────────────────────────── */
 #controls-hint {
   position: fixed;
@@ -350,6 +404,318 @@ body {
   padding: 1px 5px;
   font-family: inherit;
   color: #fbbf24;
+}
+
+/* ── Mentoring gallery ───────────────────────────── */
+.gallery-card {
+  background: #0d1117;
+  border: 1px solid rgba(52, 211, 153, 0.2);
+  border-radius: 12px;
+  max-width: 680px;
+  width: 94%;
+  max-height: 88vh;
+  overflow-y: auto;
+  position: relative;
+  animation: slideUp 0.25s ease;
+  box-shadow: 0 0 40px rgba(52, 211, 153, 0.08), 0 20px 60px rgba(0,0,0,0.7);
+}
+
+.gallery-header {
+  padding: 28px 28px 20px;
+  background: linear-gradient(135deg, rgba(52,211,153,0.08), rgba(52,211,153,0.02));
+  border-bottom: 1px solid rgba(52, 211, 153, 0.12);
+  border-radius: 12px 12px 0 0;
+}
+
+.gallery-badge {
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: #34d399;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+
+.gallery-session-label {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: rgba(52, 211, 153, 0.6);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.gallery-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #e6edf3;
+  margin-bottom: 6px;
+  line-height: 1.3;
+}
+
+.gallery-date {
+  font-size: 11px;
+  color: #8b949e;
+}
+
+.gallery-photos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 16px 28px;
+}
+
+.gallery-photos img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.08);
+  transition: transform 0.2s ease;
+}
+
+.gallery-photos img:hover {
+  transform: scale(1.02);
+}
+
+.gallery-photos .photo-placeholder {
+  width: 100%;
+  height: 180px;
+  background: rgba(255,255,255,0.04);
+  border: 1px dashed rgba(255,255,255,0.12);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4b5563;
+  font-size: 11px;
+}
+
+.gallery-body {
+  padding: 0 28px 20px;
+}
+
+.gallery-summary {
+  font-size: 13px;
+  line-height: 1.7;
+  color: #9ca3af;
+  margin-bottom: 16px;
+}
+
+.gallery-notes {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.gallery-notes li {
+  font-size: 12px;
+  color: #d1d5db;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  line-height: 1.5;
+}
+
+.gallery-notes li::before {
+  content: '→';
+  color: #34d399;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.gallery-footer {
+  padding: 16px 28px 22px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.gallery-points {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.points-badge {
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.points-badge.authority {
+  background: rgba(167,139,250,0.1);
+  border: 1px solid rgba(167,139,250,0.25);
+  color: #a78bfa;
+}
+
+.points-badge.networking {
+  background: rgba(96,165,250,0.1);
+  border: 1px solid rgba(96,165,250,0.25);
+  color: #60a5fa;
+}
+
+.gallery-hint {
+  font-size: 10px;
+  color: #6b7280;
+}
+
+.gallery-hint kbd {
+  background: rgba(255,255,255,0.08);
+  border-radius: 3px;
+  padding: 1px 5px;
+  font-family: inherit;
+  color: #fbbf24;
+}
+
+/* ── Career Milestones panel ─────────────────────── */
+.milestones-card {
+  background: #0d1117;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  max-width: 640px;
+  width: 94%;
+  max-height: 88vh;
+  overflow-y: auto;
+  position: relative;
+  animation: slideUp 0.25s ease;
+}
+
+.milestones-header {
+  padding: 28px 28px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  text-align: center;
+}
+
+.milestones-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #e6edf3;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+
+.milestones-subtitle {
+  font-size: 10px;
+  color: #34d399;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+#milestones-feed {
+  padding: 16px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.milestone-item {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.milestone-item.unlocked {
+  border-color: rgba(52,211,153,0.2);
+}
+
+.milestone-item.locked {
+  opacity: 0.4;
+}
+
+.milestone-item-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px 12px;
+}
+
+.milestone-session-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #34d399;
+  flex-shrink: 0;
+}
+
+.milestone-session-dot.locked-dot {
+  background: #374151;
+}
+
+.milestone-meta {
+  flex: 1;
+}
+
+.milestone-session-name {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: #34d399;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.milestone-session-name.locked-label {
+  color: #4b5563;
+}
+
+.milestone-title-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: #e6edf3;
+}
+
+.milestone-date {
+  font-size: 10px;
+  color: #6b7280;
+  white-space: nowrap;
+}
+
+.milestone-photos-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  padding: 0 16px 12px;
+}
+
+.milestone-photos-row img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 5px;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.milestone-photos-row .photo-placeholder {
+  width: 100%;
+  height: 120px;
+  background: rgba(255,255,255,0.03);
+  border: 1px dashed rgba(255,255,255,0.08);
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #374151;
+  font-size: 10px;
+}
+
+.milestone-summary-text {
+  font-size: 12px;
+  color: #9ca3af;
+  line-height: 1.6;
+  padding: 0 16px 14px;
+}
+
+.milestone-locked-msg {
+  font-size: 11px;
+  color: #4b5563;
+  padding: 0 16px 14px;
+  font-style: italic;
 }
 
 /* ── Ending screen ───────────────────────────────── */
