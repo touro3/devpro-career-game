@@ -458,17 +458,18 @@ body {
 }
 
 .gallery-photos {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  justify-content: center;
   gap: 8px;
   padding: 16px 28px;
 }
 
 .gallery-photos img {
-  width: 100%;
-  height: 180px;
+  max-width: 100%;
+  width: auto;
+  max-height: 240px;
   object-fit: cover;
-  border-radius: 6px;
+  border-radius: 8px;
   border: 1px solid rgba(255,255,255,0.08);
   transition: transform 0.2s ease;
 }
@@ -677,15 +678,16 @@ body {
 }
 
 .milestone-photos-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  justify-content: center;
   gap: 6px;
   padding: 0 16px 12px;
 }
 
 .milestone-photos-row img {
-  width: 100%;
-  height: 120px;
+  max-width: 100%;
+  width: auto;
+  max-height: 160px;
   object-fit: cover;
   border-radius: 5px;
   border: 1px solid rgba(255,255,255,0.06);

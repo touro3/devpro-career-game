@@ -17,8 +17,7 @@ export const MENTORING_SESSIONS = [
     buff: null,
     linkedCheckpoint: 'graph_science',
     photos: [
-      '/images/WhatsApp Image 2026-04-16 at 7.01.50 PM.jpeg',
-      '/images/WhatsApp Image 2026-04-16 at 7.01.55 PM - Copy.jpeg',
+      './images/WhatsApp Image 2026-04-16 at 7.01.55 PM - Copy.jpeg',
     ],
   },
   {
@@ -39,8 +38,7 @@ export const MENTORING_SESSIONS = [
     buff: 'market_ready',
     linkedCheckpoint: 'industry',
     photos: [
-      '/images/WhatsApp Image 2026-05-04 at 3.27.45 PM.jpeg',
-      '/images/WhatsApp Image 2026-05-04 at 3.27.46 PM - Copy.jpeg',
+      './images/WhatsApp Image 2026-05-04 at 3.27.45 PM.jpeg',
     ],
   },
   {
@@ -61,8 +59,7 @@ export const MENTORING_SESSIONS = [
     buff: 'market_ready',
     linkedCheckpoint: 'advanced_ai',
     photos: [
-      '/images/WhatsApp Image 2026-06-01 at 9.52.14 PM.jpeg',
-      '/images/WhatsApp Image 2026-06-01 at 9.52.15 PM.jpeg',
+      './images/WhatsApp Image 2026-06-01 at 9.52.15 PM.jpeg',
     ],
   },
   {
@@ -83,8 +80,7 @@ export const MENTORING_SESSIONS = [
     buff: 'market_ready',
     linkedCheckpoint: 'target',
     photos: [
-      '/images/WhatsApp Image 2026-06-01 at 9.52.14 PM.jpeg',
-      '/images/WhatsApp Image 2026-06-01 at 9.52.15 PM.jpeg',
+      './images/WhatsApp Image 2026-06-01 at 9.52.15 PM.jpeg',
     ],
   },
 ];
